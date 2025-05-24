@@ -1,5 +1,5 @@
 import { GraphQLFloat, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { ProfileType } from "./types/profile.js";
+import { ProfileType } from "./types/profile/profile.js";
 import { UUIDType } from "./types/uuid.js";
 
 export const RootQueryType = new GraphQLObjectType({
