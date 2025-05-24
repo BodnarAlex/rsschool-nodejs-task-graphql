@@ -1,5 +1,5 @@
 import { GraphQLFloat, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { ProfileType } from "./types/profile/profile.js";
+import { Profile } from "./types/profile/profile.js";
 import { UUIDType } from "./types/uuid.js";
 
 export const RootQueryType = new GraphQLObjectType({
@@ -14,7 +14,7 @@ export const RootQueryType = new GraphQLObjectType({
       resolve: () => Math.random(),
     },
     profile: {
-      type: ProfileType,
+      type: Profile,
       args: {
         id: { type: new GraphQLNonNull(UUIDType) },
       },
