@@ -1,11 +1,19 @@
-import { GraphQLBoolean, GraphQLInt, GraphQLObjectType } from "graphql";
+import { GraphQLBoolean, GraphQLInt, GraphQLNonNull, GraphQLObjectType } from "graphql";
 import { UUIDType } from "./uuid.js";
 
+// type Profile {
+//   id: UUID!
+//   isMale: Boolean!
+//   yearOfBirth: Int!
+//   memberType: MemberType!
+// }
+
 export const ProfileType = new GraphQLObjectType({
-  name: "Profile",
+  name: "ProfileType",
   fields : () => ({
-    id: {type: UUIDType},
-    isMale: {type: GraphQLBoolean},
-    yearOfBirth: {type: GraphQLInt},
+    id: {type: new GraphQLNonNull(UUIDType)},
+    isMale: {type: new GraphQLNonNull(GraphQLBoolean)},
+    yearOfBirth: {type: new GraphQLNonNull(GraphQLInt)},
+    //   memberType: MemberType!
   })
 })
