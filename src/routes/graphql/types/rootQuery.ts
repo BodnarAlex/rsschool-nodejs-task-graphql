@@ -5,6 +5,7 @@ import { UUIDType } from "./uuid.js";
 import { Context, IDType } from "./context/context.js";
 import { Post } from "./post/postType.js";
 import { User } from "./user/user.js";
+import { Profile } from "./profile/profile.js";
 
 // type RootQueryType {
 //   memberTypes: [MemberType!]!
@@ -27,6 +28,7 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
         return data;
       },
     },
+
     memberType: {
       type: MemberType,
       args: {
@@ -39,6 +41,7 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
         return data;
       },
     },
+
     users: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(User))),
       resolve: async (parent, args, context) => {
@@ -46,6 +49,7 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
         return data;
       },
     },
+
     user: {
       type: User,
       args: {
@@ -58,6 +62,7 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
         return data;
       },
     },
+
     posts: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Post))),
       resolve: async (parent, args, context) => {
@@ -77,5 +82,26 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
         return data;
       },
     },
+
+    profiles: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLList(Profile))),
+      resolve: async(parent, args, context) => {
+        const data = await context.prisma.profile.findMany();
+        return data;
+      }
+    },
+
+    profile: {
+      type: Profile,
+      args: {
+        id: {type: new GraphQLNonNull(UUIDType)},
+      },
+      resolve: async (parent, {id}: IDType, context) => {
+        const data = await context.prisma.profile.findUnique({
+        where: {id},
+      });
+      return data;
+      },
+    }
   },
 });

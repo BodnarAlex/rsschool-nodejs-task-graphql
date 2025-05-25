@@ -22,4 +22,8 @@ export type PostType = {
   authorId: string;
 };
 
-export type enumType = UserType | PostType;
+export type ProfileType = {
+  id: string;
+  isMale: boolean;
+  yearOfBirth: number;
+};
