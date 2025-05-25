@@ -1,9 +1,10 @@
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from "graphql";
 import { MemberType } from "./member/MemberType.js";
 import { MemberTypeId } from "./member/MemberTypeId.js";
-import { User } from "./user/user.js";
 import { UUIDType } from "./uuid.js";
 import { Context, IDType } from "./context/context.js";
+import { Post } from "./post/postType.js";
+import { User } from "./user/user.js";
 
 // type RootQueryType {
 //   memberTypes: [MemberType!]!
@@ -46,12 +47,33 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
       },
     },
     user: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(MemberType))),
+      type: User,
       args: {
         id: {type: new GraphQLNonNull(UUIDType)},
       },
+      resolve: async (parent, {id}: IDType, context) => {
+        const data = await context.prisma.user.findUnique({
+        where: {id},
+      });
+        return data;
+      },
+    },
+    posts: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Post))),
       resolve: async (parent, args, context) => {
-        const data = await context.prisma.user.findMany();
+        const data = await context.prisma.post.findMany();
+        return data;
+      },
+    },
+    post: {
+      type: Post,
+      args: {
+        id: {type: new GraphQLNonNull(UUIDType)},
+      },
+      resolve: async (parent, {id}: IDType, context) => {
+        const data = await context.prisma.post.findUnique({
+        where: {id},
+      });
         return data;
       },
     },

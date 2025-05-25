@@ -1,5 +1,5 @@
 
-import { GraphQLFloat, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLFieldConfigMap, GraphQLFloat, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { UUIDType } from "../uuid.js";
 import { Profile } from "../profile/profile.js";
 import { Post } from "../post/postType.js";
@@ -18,7 +18,7 @@ import { Context, UserType } from "../context/context.js";
 
 export const User = new GraphQLObjectType<UserType, Context>({
   name: "User",
-  fields : () => ({
+  fields : (): GraphQLFieldConfigMap<UserType, Context>=> ({
     id: {type: new GraphQLNonNull(UUIDType)},
     name: {type: new GraphQLNonNull(GraphQLString)},
     balance: {type: new GraphQLNonNull(GraphQLFloat)},

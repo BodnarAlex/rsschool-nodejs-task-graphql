@@ -14,3 +14,12 @@ export type UserType = {
   name: string;
   balance: number;
 };
+
+export type PostType = {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+};
+
+export type enumType = UserType | PostType;
