@@ -1,22 +1,39 @@
-import { GraphQLFloat, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { Profile } from "./types/profile/profile.js";
-import { UUIDType } from "./types/uuid.js";
+import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from "graphql";
+import { MemberType } from "./types/member/MemberType.js";
+import { MemberTypeId } from "./types/member/MemberTypeId.js";
+import { PrismaClient } from "@prisma/client";
+
+// type RootQueryType {
+//   memberTypes: [MemberType!]!
+//   memberType(id: MemberTypeId!): MemberType
+//   users: [User!]!
+//   user(id: UUID!): User
+//   posts: [Post!]!
+//   post(id: UUID!): Post
+//   profiles: [Profile!]!
+//   profile(id: UUID!): Profile
+// }
 
 export const RootQueryType = new GraphQLObjectType({
-  name: "Query",
+  name: "RootQueryType",
   fields: {
-    hello: {
-      type: GraphQLString,
-      resolve: () => "Hello world!",
+    memberTypes: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(MemberType))),
+      resolve: async (parent, args, {prisma}: {prisma: PrismaClient}) => {
+        const data = await prisma. memberType.findMany();
+        return data;
+      },
     },
-    random: {
-      type: GraphQLFloat,
-      resolve: () => Math.random(),
-    },
-    profile: {
-      type: Profile,
+    memberType: {
+      type: MemberType,
       args: {
-        id: { type: new GraphQLNonNull(UUIDType) },
+        id: {type: new GraphQLNonNull(MemberTypeId)},
+      },
+      resolve: async (parent, { id }: { id: string }, {prisma}: {prisma: PrismaClient}) => {
+        const data = await prisma.memberType.findUnique({
+          where: {id},
+        });
+        return data;
       },
     },
   },
