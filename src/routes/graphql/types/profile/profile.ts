@@ -16,6 +16,11 @@ export const Profile = new GraphQLObjectType <ProfileType, Context>({
     id: {type: new GraphQLNonNull(UUIDType)},
     isMale: {type: new GraphQLNonNull(GraphQLBoolean)},
     yearOfBirth: {type: new GraphQLNonNull(GraphQLInt)},
-    memberType: {type: new GraphQLNonNull(MemberType)}
+    memberType: {
+      type: MemberType,
+      resolve: (parent, _, context: Context) => {
+        return context.prisma.memberType.findUnique({ where: { id: parent.memberTypeId } });
+      }
+    }
   })
 })

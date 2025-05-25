@@ -84,7 +84,7 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
     },
 
     profiles: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLList(Profile))),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Profile))),
       resolve: async(parent, args, context) => {
         const data = await context.prisma.profile.findMany();
         return data;
