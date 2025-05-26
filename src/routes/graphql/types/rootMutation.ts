@@ -140,5 +140,48 @@ export const Mutations = new GraphQLObjectType<unknown, Context>({
         return "Deleted";
       },
     },
+ subscribeTo: {
+      type: new GraphQLNonNull(GraphQLString),
+      args: {
+        userId: { type: new GraphQLNonNull(UUIDType) },
+        authorId: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_parent: unknown, args: {userId: string ,authorId: string }, context): Promise<string> => {
+        await context.prisma.user.update({
+          where: { id: args.userId },
+          data: {
+            userSubscribedTo: {
+              create: {
+                authorId: args.authorId,
+              },
+            },
+          },
+        });
+        return "Unsubscribe done";
+      },
+    },
+    unsubscribeFrom: {
+      type: new GraphQLNonNull(GraphQLString),
+      args: {
+        userId: { type: new GraphQLNonNull(UUIDType) },
+        authorId: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_parent: unknown, args: {userId: string ,authorId: string }, context): Promise<string> => {
+        await context.prisma.user.update({
+          where: { id: args.userId },
+          data: {
+            userSubscribedTo: {
+              delete: {
+                subscriberId_authorId: {
+                  subscriberId: args.userId,
+                  authorId: args.authorId,
+                },
+              },
+            },
+          },
+        });
+        return "Unsubscribe done";
+      },
+    },
   },
 });
