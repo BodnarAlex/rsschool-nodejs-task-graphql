@@ -6,6 +6,10 @@ import { Profile } from "./profile/profile.js";
 import { CreateProfileInput } from "./profile/CreateProfileInput.js";
 import { Post } from "./post/postType.js";
 import { CreatePostInput } from "./post/CreatePostInput.js";
+import { UUIDType } from "./uuid.js";
+import { ChangeUserInput } from "./user/ChangeUserInput.js";
+import { ChangeProfileInput } from "./profile/ChangeProfileInput.js";
+import { ChangePostInput } from "./post/ChangePostInput.js";
 
 // type Mutations {
 //   createUser(dto: CreateUserInput!): User!
@@ -54,6 +58,48 @@ export const Mutations = new GraphQLObjectType<unknown, Context>({
       resolve: (parent: unknown,  dto: PostMutation, context) => {
         return context.prisma.post.create({
           data: dto,
+        });
+      },
+    },
+    changeUser: {
+      type: new GraphQLNonNull(User),
+      args: {
+        id: {type: new GraphQLNonNull(UUIDType)},
+        dto: { type: new GraphQLNonNull(ChangeUserInput) },
+      },
+      resolve: (parent: unknown, args: { id: string; dto: UserMutation }, context) => {
+        const { id, dto } = args;
+        return context.prisma.user.update({
+        where: { id },
+        data: dto,
+        });
+      },
+    },
+    changeProfile: {
+      type: new GraphQLNonNull(Profile),
+      args: {
+        id: {type: new GraphQLNonNull(UUIDType)},
+        dto: { type: new GraphQLNonNull(ChangeProfileInput) },
+      },
+      resolve: (parent: unknown, args: { id: string; dto: ProfileMutation }, context) => {
+        const { id, dto } = args;
+        return context.prisma.profile.update({
+        where: { id },
+        data: dto,
+        });
+      },
+    },
+    changePost: {
+      type: new GraphQLNonNull(Post),
+      args: {
+        id: {type: new GraphQLNonNull(UUIDType)},
+        dto: { type: new GraphQLNonNull(ChangePostInput) },
+      },
+      resolve: (parent: unknown, args: { id: string; dto: PostMutation }, context) => {
+        const { id, dto } = args;
+        return context.prisma.post.update({
+        where: { id },
+        data: dto,
         });
       },
     },
