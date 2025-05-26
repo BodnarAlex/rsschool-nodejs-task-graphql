@@ -1,6 +1,6 @@
 import { MemberType, Post, PrismaClient, Profile, User } from '@prisma/client';
 import DataLoader from 'dataloader';
-import { Context } from 'vm';
+import { Context } from '../context/context.js';
 
 export function createContext(prisma: PrismaClient): Context {
   return {
