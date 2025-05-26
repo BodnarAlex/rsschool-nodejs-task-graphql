@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { createLoaders } from '../loader/createLoader.js';
 
-export type Context = {
+export interface Context {
   prisma: PrismaClient;
-};
+  loaders: ReturnType<typeof createLoaders>;
+}
 
 export type IDType = {
   id: string,
