@@ -6,6 +6,7 @@ import { Context, IDType } from "./context/context.js";
 import { Post } from "./post/postType.js";
 import { User } from "./user/user.js";
 import { Profile } from "./profile/profile.js";
+import { parseResolveInfo, ResolveTree, simplifyParsedResolveInfoFragmentWithType } from 'graphql-parse-resolve-info';
 
 // type RootQueryType {
 //   memberTypes: [MemberType!]!
@@ -44,11 +45,41 @@ export const RootQueryType = new GraphQLObjectType<unknown, Context>({
 
     users: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(User))),
-      resolve: async (parent, args, context) => {
-        const data = await context.prisma.user.findMany();
-        return data;
+     resolve: async (_source, _args, context: Context, info) => {
+        const parsedInfo = parseResolveInfo(info) as ResolveTree;
+        const { fields } = simplifyParsedResolveInfoFragmentWithType(parsedInfo, User);
+
+        const includeRelations = {
+          subscribedToUser: !!fields['subscribedToUser'],
+          userSubscribedTo: !!fields['userSubscribedTo'],
+        };
+
+        const users = await context.prisma.user.findMany({
+          include: {
+            subscribedToUser: includeRelations.subscribedToUser,
+            userSubscribedTo: includeRelations.userSubscribedTo,
+          },
+        });
+
+        users.forEach((user) => {
+          if (includeRelations.subscribedToUser) {
+            const subscribers = users.filter((person) =>
+              person.subscribedToUser.some((sub) => sub.subscriberId === user.id),
+            );
+            context.loaders.subscribedToUserLoader.prime(user.id, subscribers);
+          }
+
+          if (includeRelations.userSubscribedTo) {
+            const authors = users.filter((person) =>
+              person.userSubscribedTo.some((sub) => sub.authorId === user.id),
+            );
+            context.loaders.userSubscribedToLoader.prime(user.id, authors);
+          }
+        });
+
+        return users;
+        },
       },
-    },
 
     user: {
       type: User,
