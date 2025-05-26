@@ -29,3 +29,21 @@ export type ProfileType = {
   userId: string;
   memberTypeId: string;
 };
+
+export type UserMutation = {
+  name: string,
+  balance: number,
+};
+
+export type ProfileMutation = {
+  isMale: boolean,
+  yearOfBirth: number,
+  userId: string,
+  memberTypeId: string,
+};
+
+export type PostMutation = {
+  title: string;
+  content: string;
+  authorId: string;
+};
